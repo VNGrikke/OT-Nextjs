@@ -1,6 +1,8 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import bcrypt from 'bcryptjs';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -24,21 +26,24 @@ export default function Login() {
         }
 
         try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                router.push('/dashboard'); 
-            } else {
-                setError(result.error || 'Đăng nhập thất bại');
+            const response = await axios.get("http://localhost:8888/users")
+            const user = response.data.find((u: any) => u.email === email);
+            if (!user || !bcrypt.compareSync(password, user.password)) {
+                setError('Tài khoản hoặc mật khẩu không đúng');
+                return;
             }
+
+            // Lưu thông tin user vào local storage
+            localStorage.setItem('user', JSON.stringify(user));
+
+            setTimeout(() => {
+                if (user.role === 1) {
+                    router.push('/admin/dashboard');
+                } else{
+                    router.push('/pages/home');
+                }
+            }, 2000);
+
         } catch (error) {
             console.error('Lỗi:', error);
             setError('Có lỗi xảy ra, vui lòng thử lại.');
@@ -98,7 +103,7 @@ export default function Login() {
 
                 <p className="mt-6 text-center text-gray-600 text-sm">
                     Không có tài khoản? <a
-                        onClick={() => router.push('/sign-up')}
+                        onClick={() => router.push('/pages/sign-up')}
                         className="text-blue-600 hover:underline cursor-pointer">Đăng ký</a>
                 </p>
             </div>

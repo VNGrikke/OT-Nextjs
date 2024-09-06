@@ -1,11 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
-import userSlice from "./reducers/usersSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import userReducer from './reducers/usersSlice'; // Đảm bảo đúng đường dẫn
 
 const store = configureStore({
-    reducer: {
-        users: userSlice
-    }
+  reducer: {
+    users: userReducer, // Đây phải là reducer của người dùng
+  },
 });
 
-export type RootType = ReturnType<typeof store.getState>;
 export default store;

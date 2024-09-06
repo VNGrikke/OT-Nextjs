@@ -1,16 +1,30 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-
-export const getUsers:any = createAsyncThunk<any>(
-    "users/getUsers",
-    async () => {
-        const response = await axios.get("http://localhost:8888/users");
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+// Register a new user
+export const registerUser = createAsyncThunk(
+    "users/registerUser",
+    async (userData: { fullName: string; email: string; password: string; role: number; profilePicture: string; status: number }) => {
+        const response = await axios.post("http://localhost:8888/users", userData);
         return response.data;
     }
 );
 
-export const updateUser:any = createAsyncThunk<any, any>(
+
+// Get all users
+export const getUsers = createAsyncThunk('users/getUsers', async () => {
+    try {
+        const response = await axios.get('http://localhost:8888/users');
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to fetch users');
+    }
+});
+
+
+
+
+// Update a user
+export const updateUser = createAsyncThunk(
     "users/updateUser",
     async (updatedUser: any) => {
         const response = await axios.put(`http://localhost:8888/users/${updatedUser.id}`, updatedUser);
@@ -18,7 +32,9 @@ export const updateUser:any = createAsyncThunk<any, any>(
     }
 );
 
-export const getUserInfo:any = createAsyncThunk<any, any>(
+
+// Get a single user's info
+export const getUserInfo = createAsyncThunk(
     "users/getUserInfo",
     async (userId: number) => {
         const response = await axios.get<any>(`http://localhost:8888/users/${userId}`);

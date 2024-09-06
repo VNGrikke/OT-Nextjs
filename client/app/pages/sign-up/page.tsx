@@ -1,12 +1,14 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { registerUser } from '@/redux/reducers/usersSlice';
+import bcrypt from 'bcryptjs';
+import axios from 'axios';
+import registerUser from "@/redux/reducers/usersSlice"
 
 export default function SignUp() {
     const router = useRouter();
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<any>({
         fullName: '',
         email: '',
         password: '',
@@ -31,7 +33,6 @@ export default function SignUp() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Validation
         if (!formData.fullName) {
             setErrorMessage('Vui lòng nhập họ và tên đầy đủ');
             return;
@@ -49,17 +50,19 @@ export default function SignUp() {
             return;
         }
 
-        // Dispatch action đăng ký người dùng
         try {
-            await dispatch(registerUser({
-                fullName: formData.fullName,
+            console.log(formData);
+            const salt = bcrypt.genSaltSync(10);
+            const hashedPassword = bcrypt.hashSync(formData.password, salt);
+            const response = await axios.post('http://localhost:8888/users', {
+                profilePicture: '',
+                fullName: '',
+                name: formData.name,
                 email: formData.email,
-                password: formData.password,
+                password: hashedPassword,
                 role: formData.role,
-                profilePicture: formData.profilePicture,
                 status: formData.status,
-            }));
-
+            });
             setSuccessMessage('Tài khoản đã được tạo thành công!');
             setErrorMessage('');
             setTimeout(() => {
@@ -72,15 +75,6 @@ export default function SignUp() {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-                <h2 className="text-2xl font-semibold text-center mb-6 text-gray-700">Tạo tài khoản của bạn</h2>
-
-                {errorMessage && <p className="text-red-500 text-center mb-4">{errorMessage}</p>}
-                {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
-
-                <form onSubmit={handleSubmit}>
-                    {/* Form Input Fields */}
-                    <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
                 <h2 className="text-2xl font-semibold text-center mb-6 text-gray-700">Tạo tài khoản của bạn</h2>
 
@@ -159,9 +153,5 @@ export default function SignUp() {
                 </p>
             </div>
         </div>
-                </form>
-            </div>
-        </div>
     );
 }
-

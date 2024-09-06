@@ -1,43 +1,18 @@
-// redux/userSlice.ts
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import bcrypt from 'bcryptjs';
-
-// Async action để xử lý đăng ký
-export const registerUser = createAsyncThunk(
-    'user/registerUser',
-    async (userData: { fullName: string; email: string; password: string; role: number; profilePicture: string; status: number }, { rejectWithValue }) => {
-        try {
-            const salt = bcrypt.genSaltSync(10);
-            const hashedPassword = bcrypt.hashSync(userData.password, salt);
-
-            // Gửi request đến API
-            const response = await axios.post('http://localhost:8888/users', {
-                fullName: userData.fullName,
-                email: userData.email,
-                password: hashedPassword,
-                role: userData.role,
-                profilePicture: userData.profilePicture,
-                status: userData.status
-            });
-
-            return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response.data);
-        }
-    }
-);
+import { createSlice } from '@reduxjs/toolkit';
+import { getUsers, updateUser, getUserInfo, registerUser } from '@/services/user.service';
 
 interface UserState {
     user: null | object;
+    users: null | object[];
     loading: boolean;
     error: null | string;
 }
 
 const initialState: UserState = {
     user: null,
+    users: [],
     loading: false,
-    error: null
+    error: null,
 };
 
 const userSlice = createSlice({
@@ -57,8 +32,32 @@ const userSlice = createSlice({
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(getUsers.pending, (state) => {
+                state.loading = true;
+                state.error = null; 
+            })
+            .addCase(getUsers.fulfilled, (state, action) => {
+                state.loading = false;
+                state.users = action.payload;
+            })
+            .addCase(getUsers.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                if (state.users) {
+                    state.loading = false;
+                    state.users = state.users.map((user: any) =>
+                        user.id === action.payload.id ? action.payload : user
+                    );
+                }
+            })
+            .addCase(getUserInfo.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload;
             });
-    }
+    },
 });
 
 export default userSlice.reducer;
