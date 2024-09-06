@@ -1,0 +1,32 @@
+{
+    "users": 
+    [
+        {
+            "id": 1,
+            "fullName": "Nguyen Van Vuong",
+            "email": "Thienvu24122005@gmail.com",
+            "password": "$2a$10$6VI7uX0xYqgGNN3LIYQTY.Jbrc1cmhj198XcC8V/AU5I/JbS/D70G",
+            "profilePicture": "",
+            "role": 1,
+            "status": 0
+        },
+        {
+            "id": 2,
+            "fullName": "Nguyen Van Vuong",
+            "email": "vuongk5@gmail.com",
+            "password": "$2a$10$lflFUef9QJppL2fQ3ChMeuj1tLJjXi/WFgEirmU5AesI5ozJEx83W",
+            "profilePicture": "",
+            "role": 0,
+            "status": 0
+        },
+        {
+            "id": 3,
+            "fullName": "Nguyen Van Vuong",
+            "email": "Thienvu241005@gmail.com",
+            "password": "$2a$10$bvhYLl0GEXSBArRnTHrrHu3LF82W/zBE3XVuvt26OvtjgeawS9WMa",
+            "profilePicture": "",
+            "role": 0,
+            "status": 0
+        }
+    ]
+}
