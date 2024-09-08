@@ -56,7 +56,7 @@ export default function SignUp() {
             const hashedPassword = bcrypt.hashSync(formData.password, salt);
             const response = await axios.post('http://localhost:8888/users', {
                 profilePicture: '',
-                fullName: '',
+                fullName: formData.fullName,
                 name: formData.name,
                 email: formData.email,
                 password: hashedPassword,

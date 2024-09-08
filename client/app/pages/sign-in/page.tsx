@@ -1,5 +1,5 @@
-"use client";
-import { useState } from 'react';
+"use client"
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
@@ -26,20 +26,25 @@ export default function Login() {
         }
 
         try {
-            const response = await axios.get("http://localhost:8888/users")
+            const response = await axios.get("http://localhost:8888/users");
             const user = response.data.find((u: any) => u.email === email);
+            
             if (!user || !bcrypt.compareSync(password, user.password)) {
                 setError('Tài khoản hoặc mật khẩu không đúng');
                 return;
             }
 
-            // Lưu thông tin user vào local storage
-            localStorage.setItem('user', JSON.stringify(user));
+            await axios.put(`http://localhost:8888/users/${user.id}`, {
+                ...user,
+                status: 1
+            });
+
+            localStorage.setItem('userId', user.id);  
 
             setTimeout(() => {
                 if (user.role === 1) {
                     router.push('/admin/dashboard');
-                } else{
+                } else {
                     router.push('/pages/home');
                 }
             }, 2000);

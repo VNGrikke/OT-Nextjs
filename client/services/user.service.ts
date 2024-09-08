@@ -1,5 +1,7 @@
+// Import necessary modules
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+
 // Register a new user
 export const registerUser = createAsyncThunk(
     "users/registerUser",
@@ -8,7 +10,6 @@ export const registerUser = createAsyncThunk(
         return response.data;
     }
 );
-
 
 // Get all users
 export const getUsers = createAsyncThunk('users/getUsers', async () => {
@@ -20,9 +21,6 @@ export const getUsers = createAsyncThunk('users/getUsers', async () => {
     }
 });
 
-
-
-
 // Update a user
 export const updateUser = createAsyncThunk(
     "users/updateUser",
@@ -31,7 +29,6 @@ export const updateUser = createAsyncThunk(
         return response.data;
     }
 );
-
 
 // Get a single user's info
 export const getUserInfo = createAsyncThunk(
@@ -42,3 +39,11 @@ export const getUserInfo = createAsyncThunk(
     }
 );
 
+// Delete a user
+export const deleteUser = createAsyncThunk(
+    "users/deleteUser",
+    async (userId: number) => {
+        await axios.delete(`http://localhost:8888/users/${userId}`);
+        return userId; // Return userId for handling in the reducer
+    }
+);

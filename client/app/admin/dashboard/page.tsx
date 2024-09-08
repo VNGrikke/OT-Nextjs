@@ -1,29 +1,53 @@
 "use client"
-import React from 'react'
-import Management from '@/components/managementPart/page'
-import ManagementPanel from '@/components/managementPanel/page'
-import { Provider } from 'react-redux'
-
+import Management from '@/components/managementPart/page';
+import ManagementUser from '@/components/managementUser/page';
+import ManagementCourses from '@/components/managementCourses/page';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
-export default function page() {
-    const route = useRouter();
-    const user:any = localStorage.getItem("user")
-    
-    if (!user || user.role === 0) {
-        route.push('/pages/sign-in');
-        return null;
+export default function Page() {
+    const router = useRouter();
+    const [userData, setUserData] = useState<any>(null);
+    const [selectedItem, setSelectedItem] = useState<string | null>(null);
+
+    useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        const selected = localStorage.getItem('selectedItem'); 
+
+        if (!userId) {
+            router.push('/pages/sign-in'); 
+            return;
+        }
+
+        setSelectedItem(selected);
+
+        async function fetchUserData() {
+            try {
+                const response = await axios.get(`http://localhost:8888/users/${userId}`);
+                setUserData(response.data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+
+        fetchUserData();
+    }, [router]);
+
+    if (!userData) {
+        return <p>Loading...</p>;
     }
-    
+
+    // Kiểm tra giá trị của selectedItem và hiển thị component tương ứng
     return (
-        // <Provider store={store}>
-            <div className='flex'>
-                <Management />
-                <div>
-                    <h2>Panel Management</h2>
-                    <ManagementPanel />
-                </div>
+        <div className='flex'>
+            <Management /> {/* Sidebar quản lý */}
+
+            <div>
+                {selectedItem === 'users' && <ManagementUser />} {/* Quản lý người dùng */}
+                {selectedItem === 'courses' && <ManagementCourses />} {/* Quản lý khóa học */}
+                {/* Bạn có thể thêm các mục khác ở đây như exams, questions,... */}
             </div>
-        // </Provider>
-    )
+        </div>
+    );
 }

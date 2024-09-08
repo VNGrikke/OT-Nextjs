@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getUsers, updateUser, getUserInfo, registerUser } from '@/services/user.service';
+import { getUsers, updateUser, getUserInfo, registerUser, deleteUser } from '@/services/user.service';
 
 interface UserState {
     user: null | object;
@@ -35,7 +35,7 @@ const userSlice = createSlice({
             })
             .addCase(getUsers.pending, (state) => {
                 state.loading = true;
-                state.error = null; 
+                state.error = null;
             })
             .addCase(getUsers.fulfilled, (state, action) => {
                 state.loading = false;
@@ -56,6 +56,11 @@ const userSlice = createSlice({
             .addCase(getUserInfo.fulfilled, (state, action) => {
                 state.loading = false;
                 state.user = action.payload;
+            })
+            .addCase(deleteUser.fulfilled, (state, action) => {
+                if (state.users) {
+                    state.users = state.users.filter((user: any) => user.id !== action.payload);
+                }
             });
     },
 });
