@@ -93,9 +93,10 @@ export default function ManagementPanel() {
     setNewUser({
       fullName: user.fullName,
       email: user.email,
-      password: '', // Password field is not editable
+      password: '',
       role: user.role,
       status: user.status,
+      profilePicture: user.profilePicture,
     });
     setEditMode(true);
     setShowForm(true);

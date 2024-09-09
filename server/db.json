@@ -8,49 +8,23 @@
       "role": 1,
       "status": 1,
       "id": 1
+    }
+  ],
+  "courses": [
+    {
+      "id": 1,
+      "title": "9.0 Ielts trong vong 3 tháng",
+      "description": "Học 9.0 Ielts trong vòng 3 tháng đầu tiên, đăng ký tại đây"
     },
     {
       "id": 2,
-      "fullName": "F",
-      "email": "F@gmail.com",
-      "role": 1,
-      "status": 0,
-      "password": "$2a$10$ADrM4j1KXCFwqe8QJVWR0O6CRPNxs1KFmPkQAQUhtZwgXbI.Bc4CK"
-    },
-    {
-      "fullName": "B",
-      "email": "B@gmail.com",
-      "password": "$2a$10$2WfIzWkl4bY8c5gF5tzTCe68zt6V6/02CRFR4JRyrGgNBlQO1VLpm",
-      "role": 0,
-      "status": 1,
-      "profilePicture": "",
-      "id": 3
-    },
-    {
-      "fullName": "C",
-      "email": "C@gmail.com",
-      "password": "$2a$10$WPr2S1LJOc6IYa.j10HwUubZrS9WqhG2o97xQ9ZE0wspSoZijvRpW",
-      "role": 0,
-      "status": 1,
-      "profilePicture": "",
-      "id": 4
-    }
-  ],
-  "courses":[
-    {
-      "id":1,
-      "title": "9.0 Ielts trong vong 3 tháng",
-      "description":"Học 9.0 Ielts trong vòng 3 tháng đầu tiên, đăng ký tại đây"
-    },
-    {
-      "id":2,
       "title": "Chuyen mon Giao duc Phap luat",
-      "description":"Học chuyên môn Giao duc Pháp luật, đăng ký tại đây"
+      "description": "Học chuyên môn Giao duc Pháp luật, đăng ký tại đây"
     },
     {
-      "id":3,
+      "id": 3,
       "title": "Toeic 1000",
-      "description":"Học Toeic 1000, đăng ký tại đây"
+      "description": "Học Toeic 1000, đăng ký tại đây"
     }
   ]
 }
