@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import usersSlice from './reducers/usersSlice'; // Đảm bảo đúng đường dẫn
+import usersSlice from './reducers/usersSlice';
 import coursesSlice from './reducers/coursesSlice';
+import examsSlice from './reducers/examsSlice';
 
 const store = configureStore({
   reducer: {
-    users: usersSlice, // Đây phải là reducer của người dùng
-    courses: coursesSlice, // Đây phải là reducer của khóa học
+    users: usersSlice,
+    courses: coursesSlice,
+    exams: examsSlice
   },
 });
 

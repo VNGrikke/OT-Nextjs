@@ -26,5 +26,25 @@
       "title": "Toeic 1000",
       "description": "Học Toeic 1000, đăng ký tại đây"
     }
+  ],
+  "exams": [
+    {
+      "id":1,
+      "title":"Môn Anh",
+      "description":"Luyện 9.0 ielts trong 3 tháng từ nâng cao đến co bản",
+      "courseId":1
+    },
+    {
+      "id":2,
+      "title":"Môn Pháp Luật",
+      "description":"Luyện chuyên môn Giao duc Pháp luật trong 3 tháng từ nâng cao đến co bản",
+      "courseId":2
+    },
+    {
+      "id":3,
+      "title":"Môn Tiếng Anh",
+      "description":"Luyện Toeic 1000 trong 3 tháng từ nâng cao đến co bản",
+      "courseId":3
+    }
   ]
 }

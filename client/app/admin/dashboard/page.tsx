@@ -11,15 +11,15 @@ export default function Page() {
     const router = useRouter();
     const [userData, setUserData] = useState<any>(null);
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
-    
+
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
-        const selected = localStorage.getItem('selectedItem'); 
-        
+        const selected = localStorage.getItem('selectedItem');
+
 
         if (!userId) {
-            router.push('/pages/sign-in'); 
+            router.push('/pages/sign-in');
             return;
         }
 
@@ -46,16 +46,14 @@ export default function Page() {
         return <p>Loading...</p>;
     }
 
-    // Kiểm tra giá trị của selectedItem và hiển thị component tương ứng
     return (
         <div className='flex'>
             <Management /> {/* Sidebar quản lý */}
 
             <div>
-                {selectedItem === 'users' && <ManagementUser />} {/* Quản lý người dùng */}
-                {selectedItem === 'courses' && <ManagementCourses />} {/* Quản lý khóa học */}
-                {selectedItem === 'exams' && <ManagementExams />} {/*
-                {/* Bạn có thể thêm các mục khác ở đây như exams, questions,... */}
+                {selectedItem === 'users' && <ManagementUser />}
+                {selectedItem === 'courses' && <ManagementCourses />}
+                {selectedItem === 'exams' && <ManagementExams />}
             </div>
         </div>
     );
