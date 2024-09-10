@@ -2,7 +2,10 @@
 import Management from '@/components/managementPart/page';
 import ManagementUser from '@/components/managementUser/page';
 import ManagementCourses from '@/components/managementCourses/page';
-import ManagementExams from '@/components/managementExams/page';
+import ManagementExamSubject from '@/components/managementExamSubject/page';
+import ManagementExam from '@/components/managementExam/page';
+import ManagementQuestionBank from '@/components/managementQuestionBank/page';
+
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -53,7 +56,10 @@ export default function Page() {
             <div>
                 {selectedItem === 'users' && <ManagementUser />}
                 {selectedItem === 'courses' && <ManagementCourses />}
-                {selectedItem === 'exams' && <ManagementExams />}
+                {selectedItem === 'exams-subject' && <ManagementExamSubject />}
+                {selectedItem === 'exams' && <ManagementExam />}
+                {selectedItem === 'questionBank' && <ManagementQuestionBank/>}
+
             </div>
         </div>
     );

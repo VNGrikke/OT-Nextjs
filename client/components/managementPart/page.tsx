@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 
 export default function ManagementPart() {
     const router = useRouter();
-    const [selectedItem, setSelectedItem] = useState<string | null>(null);
+    const [selectedItem, setSelectedItem] = useState<string | null>("users");
 
     // Khi component được mount, lấy trạng thái focus từ localStorage
     useEffect(() => {
@@ -21,7 +21,7 @@ export default function ManagementPart() {
 
     // Xử lý đăng xuất
     const handleLogout = () => {
-        localStorage.removeItem('user');
+        localStorage.removeItem('userId');
         localStorage.removeItem('selectedItem');  // Xóa trạng thái focus khi đăng xuất
         router.push('/pages/sign-in');
     };
@@ -46,14 +46,14 @@ export default function ManagementPart() {
                         Khóa Học
                     </li>
                     <li
-                        className={`px-[20px] py-[15px] cursor-pointer ${selectedItem === 'exams' ? 'bg-lime-500' : 'hover:bg-lime-500'}`}
-                        onClick={() => handleItemClick('exams')}
+                        className={`px-[20px] py-[15px] cursor-pointer ${selectedItem === 'exams-subject' ? 'bg-lime-500' : 'hover:bg-lime-500'}`}
+                        onClick={() => handleItemClick('exams-subject')}
                     >
                         Môn Thi
                     </li>
                     <li
-                        className={`px-[20px] py-[15px] cursor-pointer ${selectedItem === 'examPapers' ? 'bg-lime-500' : 'hover:bg-lime-500'}`}
-                        onClick={() => handleItemClick('examPapers')}
+                        className={`px-[20px] py-[15px] cursor-pointer ${selectedItem === 'exams' ? 'bg-lime-500' : 'hover:bg-lime-500'}`}
+                        onClick={() => handleItemClick('exams')}
                     >
                         Đề Thi
                     </li>

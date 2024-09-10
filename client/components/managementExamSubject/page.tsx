@@ -1,73 +1,72 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getExams, addExam, updateExam, deleteExam } from '@/services/exams.service';
+"use client";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addExamSubject, getExamSubjects, updateExamSubject, deleteExamSubject, } from "@/services/examSubject.service";
 
 export default function ExamManagementPanel() {
   const dispatch: any = useDispatch();
-  const { exams, loading, error } = useSelector((state: any) => state.exams);
+  const { examSubjects, loading, error } = useSelector((state: any) => state.examSubject);
   const [newExam, setNewExam] = useState<any>({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     courseId: 0,
   });
-  const [formError, setFormError] = useState('');
+  const [formError, setFormError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [currentExam, setCurrentExam] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const examsPerPage = 10;
 
   useEffect(() => {
-    dispatch(getExams());
+    dispatch(getExamSubjects());
   }, [dispatch]);
 
-  // Handle form submission to add or update an exam
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormError('');
+    setFormError("");
 
     if (!newExam.title || !newExam.description || !newExam.courseId) {
-      setFormError('Vui lòng nhập đầy đủ thông tin.');
+      setFormError("Vui lòng nhập đầy đủ thông tin.");
       return;
     }
 
     try {
       if (editMode && currentExam) {
-        await dispatch(updateExam({
-          id: currentExam.id,
-          title: newExam.title,
-          description: newExam.description,
-          courseId: newExam.courseId,
-        }));
+        await dispatch(
+          updateExamSubject({
+            id: currentExam.id,
+            title: newExam.title,
+            description: newExam.description,
+            courseId: newExam.courseId,
+          })
+        );
       } else {
-        await dispatch(addExam(newExam));
+        await dispatch(addExamSubject(newExam));
       }
-      setNewExam({ title: '', description: '', courseId: 0 });
+      setNewExam({ title: "", description: "", courseId: 0 });
       setShowForm(false);
       setEditMode(false);
       setCurrentExam(null);
-      setSearchQuery(''); // Clear search query
-      dispatch(getExams()); // Refresh the exam list
+      setSearchQuery(""); // Clear search query
+      dispatch(getExamSubjects()); // Refresh the exam list
     } catch (error) {
-      console.error('Thao tác không thành công:', error);
+      console.error("Thao tác không thành công:", error);
     }
   };
 
-  // Handle exam deletion
   const handleDelete = async (examId: number) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa bài kiểm tra này?')) {
+    if (window.confirm("Bạn có chắc chắn muốn xóa bài kiểm tra này?")) {
       try {
-        await dispatch(deleteExam(examId));
-        dispatch(getExams()); // Refresh the exam list
+        await dispatch(deleteExamSubject(examId));
+        dispatch(getExamSubjects()); // Refresh the exam list
       } catch (error) {
-        console.error('Xóa bài kiểm tra không thành công:', error);
+        console.error("Xóa bài kiểm tra không thành công:", error);
       }
     }
   };
 
-  // Handle edit button click
   const handleEdit = (exam: any) => {
     setCurrentExam(exam);
     setNewExam({
@@ -79,37 +78,33 @@ export default function ExamManagementPanel() {
     setShowForm(true);
   };
 
-  // Filter exams based on search query
-  const filteredExams = exams?.filter((exam: any) =>
-    exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    exam.description.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
+  const filteredExams =
+    examSubjects?.filter(
+      (exam: any) =>
+        exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        exam.description.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
 
-  // Calculate displayed exams
   const indexOfLastExam = (currentPage + 1) * examsPerPage;
   const indexOfFirstExam = indexOfLastExam - examsPerPage;
   const displayedExams = filteredExams.slice(indexOfFirstExam, indexOfLastExam);
 
-  // Change page handler
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
-  // Generate page numbers
   const totalPages = Math.ceil(filteredExams.length / examsPerPage);
-  const pageNumbers = [];
-  for (let i = 0; i < totalPages; i++) {
-    pageNumbers.push(i);
-  }
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Exam Management Panel</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+        Exam Management Panel
+      </h2>
 
-      {/* Search Bar */}
       <div className="mb-6 max-w-md mx-auto">
         <input
           type="text"
@@ -120,55 +115,76 @@ export default function ExamManagementPanel() {
         />
       </div>
 
-      {/* Button to show the form */}
       <button
         onClick={() => {
-          setShowForm(!showForm);
+          setShowForm(true);
           setEditMode(false);
           setCurrentExam(null);
-          setNewExam({ title: '', description: '', courseId: 0 });
+          setNewExam({ title: "", description: "", courseId: 0 });
         }}
         className="mb-6 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
       >
-        {showForm ? 'Hide Form' : 'Add New Exam'}
+        Add New Exam
       </button>
 
-      {/* Form to add or update an exam */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mb-6 max-w-md mx-auto fixed top-16 left-1/2 transform -translate-x-1/2 z-10">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">
-            {editMode ? 'Edit Exam' : 'Add New Exam'}
-          </h3>
-          <div className="grid grid-cols-1 gap-4">
-            <input
-              type="text"
-              placeholder="Title"
-              value={newExam.title}
-              onChange={(e) => setNewExam({ ...newExam, title: e.target.value })}
-              className="border p-2 rounded"
-            />
-            <textarea
-              placeholder="Description"
-              value={newExam.description}
-              onChange={(e) => setNewExam({ ...newExam, description: e.target.value })}
-              className="border p-2 rounded"
-            />
-            <input
-              type="number"
-              placeholder="Course ID"
-              value={newExam.courseId}
-              onChange={(e) => setNewExam({ ...newExam, courseId: parseInt(e.target.value) })}
-              className="border p-2 rounded"
-            />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-md max-w-md w-full relative">
+            <h3 className="text-xl font-semibold mb-4 text-gray-700">
+              {editMode ? "Edit Exam" : "Add New Exam"}
+            </h3>
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 gap-4">
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={newExam.title}
+                  onChange={(e) =>
+                    setNewExam({ ...newExam, title: e.target.value })
+                  }
+                  className="border p-2 rounded"
+                />
+                <textarea
+                  placeholder="Description"
+                  value={newExam.description}
+                  onChange={(e) =>
+                    setNewExam({ ...newExam, description: e.target.value })
+                  }
+                  className="border p-2 rounded"
+                />
+                <input
+                  type="number"
+                  placeholder="Course ID"
+                  value={newExam.courseId}
+                  onChange={(e) =>
+                    setNewExam({
+                      ...newExam,
+                      courseId: parseInt(e.target.value),
+                    })
+                  }
+                  className="border p-2 rounded"
+                />
+              </div>
+              {formError && <p className="text-red-500 mt-2">{formError}</p>}
+              <div className="flex justify-between">
+                <button
+                  type="submit"
+                  className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {editMode ? "Update Exam" : "Add Exam"}
+                </button>
+                <button
+                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  onClick={() => setShowForm(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-          {formError && <p className="text-red-500 mt-2">{formError}</p>}
-          <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            {editMode ? 'Update Exam' : 'Add Exam'}
-          </button>
-        </form>
+        </div>
       )}
 
-      {/* Exam table */}
       {Array.isArray(displayedExams) && displayedExams.length > 0 ? (
         <div>
           <table className="table-auto w-full border-collapse border border-gray-400 bg-white shadow-md rounded-lg">
@@ -184,10 +200,18 @@ export default function ExamManagementPanel() {
             <tbody>
               {displayedExams.map((exam: any, index: number) => (
                 <tr key={exam.id}>
-                  <td className="border border-gray-400 px-4 py-2">{index + 1 + currentPage * examsPerPage}</td>
-                  <td className="border border-gray-400 px-4 py-2">{exam.title}</td>
-                  <td className="border border-gray-400 px-4 py-2">{exam.description}</td>
-                  <td className="border border-gray-400 px-4 py-2">{exam.courseId}</td>
+                  <td className="border border-gray-400 px-4 py-2">
+                    {index + 1 + currentPage * examsPerPage}
+                  </td>
+                  <td className="border border-gray-400 px-4 py-2">
+                    {exam.title}
+                  </td>
+                  <td className="border border-gray-400 px-4 py-2">
+                    {exam.description}
+                  </td>
+                  <td className="border border-gray-400 px-4 py-2">
+                    {exam.courseId}
+                  </td>
                   <td className="border border-gray-400 px-4 py-2 flex gap-2">
                     <button
                       onClick={() => handleEdit(exam)}
@@ -219,7 +243,10 @@ export default function ExamManagementPanel() {
               <button
                 key={number}
                 onClick={() => handlePageChange(number)}
-                className={`px-4 py-2 ${currentPage === number ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                className={`px-4 py-2 ${currentPage === number
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-700"
+                  } hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               >
                 {number + 1}
               </button>
