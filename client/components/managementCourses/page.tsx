@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCourses, addCourse, updateCourse, deleteCourse } from '@/services/courses.service';
@@ -22,7 +22,6 @@ export default function ManagementPanel() {
     dispatch(getCourses());
   }, [dispatch]);
 
-  // Handle form submission to add or update a course
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormError('');
@@ -53,7 +52,6 @@ export default function ManagementPanel() {
     }
   };
 
-  // Handle course deletion
   const handleDelete = async (courseId: number) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa khóa học này?')) {
       try {
@@ -65,7 +63,6 @@ export default function ManagementPanel() {
     }
   };
 
-  // Handle edit button click
   const handleEdit = (course: any) => {
     setCurrentCourse(course);
     setNewCourse({
@@ -76,28 +73,28 @@ export default function ManagementPanel() {
     setShowForm(true);
   };
 
-  // Filter courses based on search query
+  const handleCancel = () => {
+    setNewCourse({ title: '', description: '' });
+    setShowForm(false);
+    setEditMode(false);
+    setCurrentCourse(null);
+  };
+
   const filteredCourses = courses?.filter((course: any) =>
     course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     course.description.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
-  // Calculate displayed courses
   const indexOfLastCourse = (currentPage + 1) * coursesPerPage;
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
   const displayedCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse);
 
-  // Change page handler
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
-  // Generate page numbers
   const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
-  const pageNumbers = [];
-  for (let i = 0; i < totalPages; i++) {
-    pageNumbers.push(i);
-  }
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
@@ -106,7 +103,6 @@ export default function ManagementPanel() {
     <div className="p-6 bg-gray-100 min-h-screen">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Course Management Panel</h2>
 
-      {/* Search Bar */}
       <div className="mb-6 max-w-md mx-auto">
         <input
           type="text"
@@ -117,45 +113,60 @@ export default function ManagementPanel() {
         />
       </div>
 
-      {/* Button to show the form */}
       <button
         onClick={() => {
-          setShowForm(!showForm);
+          setShowForm(true);
           setEditMode(false);
           setCurrentCourse(null);
           setNewCourse({ title: '', description: '' });
         }}
         className="mb-6 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
       >
-        {showForm ? 'Hide Form' : 'Add New Course'}
+        Add New Course
       </button>
 
-      {/* Form to add or update a course */}
+      {/* Modal for Add/Edit Course */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mb-6 max-w-md mx-auto fixed top-16 left-1/2 transform -translate-x-1/2 z-10">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">
-            {editMode ? 'Edit Course' : 'Add New Course'}
-          </h3>
-          <div className="grid grid-cols-1 gap-4">
-            <input
-              type="text"
-              placeholder="Course Title"
-              value={newCourse.title}
-              onChange={(e) => setNewCourse({ ...newCourse, title: e.target.value })}
-              className="border p-2 rounded"
-            />
-            <textarea
-              placeholder="Course Description"
-              value={newCourse.description}
-              onChange={(e) => setNewCourse({ ...newCourse, description: e.target.value })}
-              className="border p-2 rounded"
-            />
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-xl font-semibold mb-4 text-gray-700">
+              {editMode ? 'Edit Course' : 'Add New Course'}
+            </h3>
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 gap-4">
+                <input
+                  type="text"
+                  placeholder="Course Title"
+                  value={newCourse.title}
+                  onChange={(e) => setNewCourse({ ...newCourse, title: e.target.value })}
+                  className="border p-2 rounded"
+                />
+                <textarea
+                  placeholder="Course Description"
+                  value={newCourse.description}
+                  onChange={(e) => setNewCourse({ ...newCourse, description: e.target.value })}
+                  className="border p-2 rounded"
+                />
+              </div>
+              {formError && <p className="text-red-500 mt-2">{formError}</p>}
+              <div className="flex justify-between mt-4">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {editMode ? 'Update Course' : 'Add Course'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-          {formError && <p className="text-red-500 mt-2">{formError}</p>}
-          <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            {editMode ? 'Update Course' : 'Add Course'}
-          </button>
-        </form>
+        </div>
       )}
 
       {/* Course table */}
@@ -222,7 +233,7 @@ export default function ManagementPanel() {
           </div>
         </div>
       ) : (
-        <p className="text-center text-gray-600">No courses found</p>
+        <p className="text-center text-gray-500">No courses found</p>
       )}
     </div>
   );

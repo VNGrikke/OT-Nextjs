@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers, registerUser, updateUser, deleteUser } from '@/services/user.service';
@@ -58,7 +59,6 @@ export default function ManagementPanel() {
           email: newUser.email,
           role: newUser.role,
           status: newUser.status,
-          profilePicture: "",
           password: newUser.password ? newUser.password : currentUser.password // Maintain existing password if not provided
         }));
       } else {
@@ -96,7 +96,6 @@ export default function ManagementPanel() {
       password: '',
       role: user.role,
       status: user.status,
-      profilePicture: user.profilePicture,
     });
     setEditMode(true);
     setShowForm(true);
@@ -120,10 +119,7 @@ export default function ManagementPanel() {
 
   // Generate page numbers
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
-  const pageNumbers = [];
-  for (let i = 0; i < totalPages; i++) {
-    pageNumbers.push(i);
-  }
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
@@ -146,60 +142,76 @@ export default function ManagementPanel() {
       {/* Button to show the form */}
       <button
         onClick={() => {
-          setShowForm(!showForm);
+          setShowForm(true);
           setEditMode(false);
           setCurrentUser(null);
-          setNewUser({ fullName: '', email: '', password: '', profilePicture: '',role: 0, status: 1 });
+          setNewUser({ fullName: '', email: '', password: '', role: 0, status: 1 });
         }}
         className="mb-6 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
       >
-        {showForm ? 'Hide Form' : 'Add New User'}
+        Add New User
       </button>
 
-      {/* Form to add or update a user */}
+      {/* Modal for Add/Edit User */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mb-6 max-w-md mx-auto fixed top-16 left-1/2 transform -translate-x-1/2 z-10">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">
-            {editMode ? 'Edit User' : 'Add New User'}
-          </h3>
-          <div className="grid grid-cols-1 gap-4">
-            <input
-              type="text"
-              placeholder="Full Name"
-              value={newUser.fullName}
-              onChange={(e) => setNewUser({ ...newUser, fullName: e.target.value })}
-              className="border p-2 rounded"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={newUser.email}
-              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              className="border p-2 rounded"
-            />
-            {!editMode && (
-              <input
-                type="password"
-                placeholder="Password"
-                value={newUser.password}
-                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                className="border p-2 rounded"
-              />
-            )}
-            <select
-              value={newUser.role}
-              onChange={(e) => setNewUser({ ...newUser, role: parseInt(e.target.value) })}
-              className="border p-2 rounded"
-            >
-              <option value={0}>User</option>
-              <option value={1}>Admin</option>
-            </select>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-xl font-semibold mb-4 text-gray-700">
+              {editMode ? 'Edit User' : 'Add New User'}
+            </h3>
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 gap-4">
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  value={newUser.fullName}
+                  onChange={(e) => setNewUser({ ...newUser, fullName: e.target.value })}
+                  className="border p-2 rounded"
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={newUser.email}
+                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                  className="border p-2 rounded"
+                />
+                {!editMode && (
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    value={newUser.password}
+                    onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                    className="border p-2 rounded"
+                  />
+                )}
+                <select
+                  value={newUser.role}
+                  onChange={(e) => setNewUser({ ...newUser, role: parseInt(e.target.value) })}
+                  className="border p-2 rounded"
+                >
+                  <option value={0}>User</option>
+                  <option value={1}>Admin</option>
+                </select>
+              </div>
+              {formError && <p className="text-red-500 mt-2">{formError}</p>}
+              <div className="flex justify-between mt-4">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {editMode ? 'Update User' : 'Add User'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-          {formError && <p className="text-red-500 mt-2">{formError}</p>}
-          <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            {editMode ? 'Update User' : 'Add User'}
-          </button>
-        </form>
+        </div>
       )}
 
       {/* User table */}

@@ -8,6 +8,15 @@
       "role": 1,
       "status": 1,
       "id": 1
+    },
+    {
+      "profilePicture": "",
+      "fullName": "Nguyen Van Vu",
+      "email": "vuongk5@gmail.com",
+      "password": "$2a$10$dVE6fnvCZAJe9HKDrMczH.5ckqKUROjuxQDBPm0/RvDrR80ktAklG",
+      "role": 0,
+      "status": 1,
+      "id": 2
     }
   ],
   "courses": [
